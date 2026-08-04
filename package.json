@@ -12,6 +12,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "@notionhq/client": "^2.2.15",
     "astro": "^7.1.6"
   }
