@@ -1,0 +1,872 @@
+---
+import { getArticles } from "../lib/notion.js";
+
+// Notionからお知らせとコラムを取得
+const oshirase = await getArticles("お知らせ");
+const columns = await getArticles("コラム");
+
+// 日付を「2026.09.01」形式に整える関数
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}.${m}.${day}`;
+}
+
+// デフォルトのサムネイル画像
+const defaultThumb = "images/kv.jpg";
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英語リトミック教室 セブンノーツ｜大阪府羽曳野市羽曳が丘（0〜6歳）</title>
+<meta name="description" content="大阪府羽曳野市羽曳が丘の英語リトミック教室「7notes Kids' English（セブンノーツ キッズ イングリッシュ）」。0〜2歳のベビークラスと3〜6歳のキッズクラス。音楽と英語を組み合わせ、遊びながら自然に英語が身につく少人数制レッスン。オールEnglish・フォニックス対応。体験レッスン受付中。">
+<meta name="keywords" content="英語リトミック,羽曳野市,羽曳が丘,南河内,幼児英語,親子英語,ベビー英語,フォニックス,習い事,0歳,1歳,2歳,3歳,4歳,5歳,6歳">
+
+<!-- OGP -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="英語リトミック教室 セブンノーツ｜大阪府羽曳野市羽曳が丘（0〜6歳）">
+<meta property="og:description" content="音楽と英語を組み合わせた、遊びながら自然に英語が身につく少人数制レッスン。羽曳野市羽曳が丘で体験レッスン受付中。">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="7notes Kids' English">
+
+<link rel="canonical" href="https://7notes-english.com/">
+
+<!-- ===== 構造化データ：教室情報（LocalBusiness） ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ChildCare",
+  "name": "7notes Kids' English（セブンノーツ キッズ イングリッシュ）",
+  "alternateName": "英語リトミック教室 セブンノーツ",
+  "description": "大阪府羽曳野市羽曳が丘の英語リトミック教室。0〜6歳を対象に、音楽と英語を組み合わせた少人数制レッスンを行っています。",
+  "url": "https://7notes-english.com/",
+  "areaServed": ["羽曳野市", "藤井寺市", "松原市", "富田林市", "大阪狭山市", "南河内"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressRegion": "大阪府",
+    "addressLocality": "羽曳野市",
+    "streetAddress": "羽曳が丘 第1集会所 2階",
+    "addressCountry": "JP"
+  },
+  "audience": {
+    "@type": "EducationalAudience",
+    "audienceType": "0歳〜6歳の未就学児とその保護者"
+  },
+  "priceRange": "月額5,500円",
+  "sameAs": [
+    "https://www.instagram.com/7notes_english_rhythmic/",
+    "https://note.com/7notes_"
+  ]
+}
+</script>
+
+<!-- ===== 構造化データ：よくある質問（FAQPage） ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "何歳から通えますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "0歳から通えます。0〜2歳は親子で参加するベビークラス、3〜6歳の未就学児は子どものみで参加するキッズクラスがあります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "英語がまったく初めてでも大丈夫ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい、初めてのお子さんがほとんどです。歌やリズム、体を動かす遊びの中で自然に英語に親しんでいくので、英語が初めてでも問題ありません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "保護者が英語を話せなくても大丈夫ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "大丈夫です。保護者の方に英語力は必要ありません。お子さんと一緒に楽しんでいただくことが一番のサポートになります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "レッスンは何語で行われますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "レッスンは先生も英語のみを使うオールEnglishで行います。Let's walk! やJump 3 times! などの指示を、繰り返しの中で自然に英語で聞き分けられるようになります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "料金はいくらですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ベビークラス・キッズクラスともに月額5,500円です。入会金は2,000円です。どちらも年間36回（月3回）のレッスンです。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "場所はどこですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "大阪府羽曳野市の羽曳が丘第1集会所2階です。充分な駐車スペースがあります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "体験レッスンはできますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい、体験レッスンを受け付けています。サイトの申し込みフォーム、または公式LINEからお気軽にお申し込みください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "イヤイヤ期で落ち着いて座れなくても参加できますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "大丈夫です。特にベビークラスは少人数で一人ひとりのペースを大切にしています。座っていなくても、子どもの耳はしっかり聴いているので、その場にいるだけで十分です。"
+      }
+    }
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --pink:#ED1E78;
+    --pink-soft:#F9D5E4;
+    --pink-pale:#FDF0F5;
+    --ink:#2B2B2B;
+    --ink-soft:#5A5A5A;
+    --paper:#FFFFFF;
+    --greige:#F5F2EF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  section[id]{scroll-margin-top:80px;}
+  body{
+    font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+    color:var(--ink);
+    line-height:1.9;
+    background:var(--paper);
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+
+  /* 見出し共通 */
+  .eyebrow{
+    display:inline-block;
+    font-size:.78rem;
+    letter-spacing:.18em;
+    color:var(--pink);
+    font-weight:700;
+    margin-bottom:.6em;
+  }
+  .section-title{
+    font-size:clamp(1.5rem,5vw,2.1rem);
+    font-weight:800;
+    color:var(--pink);
+    line-height:1.4;
+    margin-bottom:.2em;
+  }
+  .section-title-en{
+    font-size:clamp(1rem,3.5vw,1.3rem);
+    color:#C9C2BE;
+    font-weight:800;
+    letter-spacing:.02em;
+    margin-bottom:1.4em;
+  }
+
+  section{padding:clamp(3rem,9vw,5.5rem) 1.4rem;}
+  .wrap{max-width:760px;margin:0 auto;}
+
+  /* ===== ヘッダー ===== */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--pink-soft);
+    padding:1.05rem 1.2rem;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .site-header .logo{font-weight:800;color:var(--pink);font-size:1.05rem;letter-spacing:.02em;display:flex;align-items:center;gap:.6rem;}
+  .site-header .logo-img{height:52px;width:auto;}
+  .site-header .logo span{font-size:.7rem;color:var(--ink-soft);display:block;font-weight:600;letter-spacing:.06em;}
+  .header-cta{
+    background:var(--pink);color:#fff;text-decoration:none;
+    padding:.5rem 1rem;border-radius:999px;font-size:.85rem;font-weight:700;
+    white-space:nowrap;
+  }
+
+  /* ナビゲーション */
+  .site-nav{display:flex;align-items:center;gap:.3rem;}
+  .site-nav a{
+    text-decoration:none;color:var(--ink);font-size:.9rem;font-weight:700;
+    padding:.5rem .7rem;border-radius:8px;white-space:nowrap;
+    transition:color .15s ease,background .15s ease;
+  }
+  .site-nav a:hover{color:var(--pink);background:var(--pink-pale);}
+  .site-nav a.nav-cta{
+    background:var(--pink);color:#fff;margin-left:.4rem;
+    padding:.5rem 1.1rem;border-radius:999px;
+  }
+  .site-nav a.nav-cta:hover{background:#d11268;color:#fff;}
+
+  /* ハンバーガーボタン（スマホのみ表示） */
+  .nav-toggle{
+    display:none;flex-direction:column;gap:5px;
+    background:none;border:none;cursor:pointer;padding:.4rem;z-index:60;
+  }
+  .nav-toggle span{
+    display:block;width:26px;height:3px;border-radius:2px;
+    background:var(--pink);transition:transform .25s ease,opacity .2s ease;
+  }
+  .nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(8px) rotate(45deg);}
+  .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-8px) rotate(-45deg);}
+
+  /* タブレット以下：ナビを折りたたむ */
+  @media(max-width:900px){
+    .nav-toggle{display:flex;}
+    .site-nav{
+      position:fixed;top:0;right:0;height:100vh;width:min(78vw,320px);
+      flex-direction:column;align-items:stretch;justify-content:flex-start;
+      gap:0;padding:5.5rem 1.4rem 2rem;
+      background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.12);
+      transform:translateX(100%);transition:transform .3s ease;
+      overflow-y:auto;
+    }
+    .site-nav.open{transform:translateX(0);}
+    .site-nav a{
+      padding:1rem .5rem;border-bottom:1px solid var(--pink-pale);
+      font-size:1rem;border-radius:0;
+    }
+    .site-nav a.nav-cta{
+      margin:1rem 0 0;text-align:center;border-radius:999px;border-bottom:none;
+    }
+    /* 背景オーバーレイ */
+    .nav-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:40;
+      opacity:0;visibility:hidden;transition:opacity .3s ease;
+    }
+    .nav-overlay.open{opacity:1;visibility:visible;}
+  }
+
+  /* ===== ヒーロー（全面背景） ===== */
+  .hero{
+    position:relative;
+    min-height:min(88vh,720px);
+    display:flex;align-items:flex-end;
+    padding:clamp(2rem,6vw,4rem) 1.4rem clamp(2.5rem,7vw,4rem);
+    background-image:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.15) 45%,rgba(0,0,0,.55) 100%),url("images/kv.jpg");
+    background-size:cover;
+    background-position:center 30%;
+    overflow:hidden;
+  }
+  .hero-inner{
+    position:relative;z-index:2;
+    max-width:1080px;margin:0 auto;width:100%;
+  }
+  .hero-copy{max-width:620px;}
+  .hero-logo{
+    height:56px;width:auto;margin-bottom:1.3rem;
+    background:rgba(255,255,255,.92);padding:.5rem .8rem;border-radius:12px;
+  }
+  .hero h1{
+    font-size:clamp(1.7rem,6vw,3rem);
+    font-weight:800;
+    line-height:1.4;
+    margin-bottom:.6em;
+    color:#fff;
+    text-shadow:0 2px 12px rgba(0,0,0,.35);
+  }
+  .hero h1 .l{display:block;}
+  .hero h1 em{
+    color:#fff;font-style:normal;
+  }
+  .hero .lead{
+    font-size:clamp(.95rem,3.5vw,1.15rem);
+    color:#fff;
+    margin-bottom:1.4em;
+    text-shadow:0 1px 8px rgba(0,0,0,.4);
+  }
+  .hero .tags{
+    display:flex;flex-wrap:wrap;gap:.5rem;
+    margin-bottom:1.8em;
+  }
+  .hero .tags span{
+    background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.55);
+    color:#fff;font-size:.82rem;font-weight:700;
+    padding:.35rem .9rem;border-radius:999px;
+    backdrop-filter:blur(4px);
+  }
+  .btn-line{
+    display:inline-flex;align-items:center;gap:.5em;
+    background:var(--pink);color:#fff;text-decoration:none;
+    font-weight:800;font-size:1.05rem;
+    padding:.95rem 2.2rem;border-radius:999px;
+    box-shadow:0 8px 22px rgba(237,30,120,.28);
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .btn-line:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(237,30,120,.35);}
+  .btn-line small{display:block;font-size:.7rem;font-weight:600;opacity:.9;}
+
+  /* ===== お知らせ ===== */
+  .news{background:#fff;}
+  .news-item{
+    display:grid;grid-template-columns:auto 1fr;gap:.3rem 1.6rem;
+    padding:1.5rem 0;border-bottom:1px solid #E5E0DC;
+  }
+  @media(max-width:520px){.news-item{grid-template-columns:1fr;gap:.4rem;}}
+  .news-item time{
+    font-size:.8rem;color:var(--ink-soft);font-weight:700;
+    letter-spacing:.08em;padding-top:.25em;font-variant-numeric:tabular-nums;
+  }
+  .news-item .news-body h3{font-size:1.08rem;margin-bottom:.4em;font-weight:800;line-height:1.5;}
+  .news-item .news-body p{font-size:.9rem;color:var(--ink-soft);}
+  .news-item .tag{
+    display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.05em;
+    color:var(--pink);border:1px solid var(--pink);border-radius:3px;
+    padding:.1em .5em;margin-bottom:.5em;
+  }
+
+  /* ===== 特徴 ===== */
+  .features .feature{
+    display:flex;gap:1.2rem;align-items:flex-start;
+    padding:1.6rem 0;border-bottom:1px dashed var(--pink-soft);
+  }
+  .features .feature:last-child{border-bottom:none;}
+  .feature .icon{
+    flex-shrink:0;width:56px;height:56px;border-radius:50%;
+    background:var(--pink-pale);display:grid;place-items:center;
+  }
+  .feature .icon svg{width:34px;height:34px;}
+  .feature h3{font-size:1.15rem;color:var(--pink);font-weight:800;margin-bottom:.3em;}
+  .feature p{font-size:.94rem;color:var(--ink-soft);}
+  .feature .example{
+    display:inline-block;margin-top:.6em;font-size:.85rem;
+    background:var(--greige);padding:.5em .9em;border-radius:10px;color:var(--ink);
+  }
+
+  /* ===== クラス情報 ===== */
+  .classes{background:var(--greige);}
+  .class-list{border-top:2px solid var(--ink);}
+  .class-row{
+    padding:2rem 0;border-bottom:1px solid #DAD4CF;
+  }
+  .class-row .label{
+    display:flex;align-items:baseline;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;
+  }
+  .class-row .label .en{
+    font-size:1.6rem;font-weight:800;letter-spacing:.01em;
+  }
+  .class-row.baby .label .en{color:#E56AA0;}
+  .class-row.kids .label .en{color:var(--pink);}
+  .class-row .label .who{font-size:.82rem;color:var(--ink-soft);font-weight:700;}
+  .class-row .detail{
+    display:grid;grid-template-columns:auto 1fr;gap:.55em 1.4em;font-size:.95rem;
+  }
+  .class-row dt{color:var(--ink-soft);font-weight:700;white-space:nowrap;}
+  .class-row dd{color:var(--ink);}
+  .class-row .fee-num{font-size:1.15rem;font-weight:800;}
+  .class-row .fee-num small{font-size:.78rem;color:var(--ink-soft);font-weight:600;margin-left:.3em;}
+  .class-note{
+    text-align:center;font-size:.92rem;color:var(--ink-soft);margin-top:1.8rem;
+  }
+
+  /* ===== 保護者の声 ===== */
+  .voices{background:#fff;}
+  .voice-card{
+    background:var(--pink-pale);border-radius:18px;
+    padding:1.6rem 1.6rem 1.6rem;margin-bottom:1.2rem;position:relative;
+  }
+  .voice-card::before{
+    content:"\201C";position:absolute;top:.1em;left:.35em;
+    font-size:3rem;color:var(--pink-soft);font-family:Georgia,serif;line-height:1;
+  }
+  .voice-card p{font-size:.94rem;position:relative;padding-top:.6em;}
+  .voice-card .who{margin-top:.8em;font-size:.8rem;color:var(--pink);font-weight:700;}
+
+  /* ===== 講師紹介 ===== */
+  .instructors{background:var(--pink-pale);}
+  .inst-grid{display:grid;gap:1.6rem;}
+  @media(min-width:620px){.inst-grid{grid-template-columns:1fr 1fr;}}
+  .inst-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 20px rgba(237,30,120,.08);}
+  .inst-card .photo{aspect-ratio:3/4;background:var(--greige);display:grid;place-items:center;color:#B9B9B9;font-size:.85rem;}
+  .inst-card .photo img{width:100%;height:100%;object-fit:cover;}
+  .inst-card .body{padding:1.4rem 1.4rem 1.6rem;}
+  .inst-card h3{font-size:1.3rem;font-weight:800;margin-bottom:.5em;}
+  .inst-card p{font-size:.9rem;color:var(--ink-soft);}
+
+  /* ===== ギャラリー ===== */
+  .gallery{background:#fff;}
+  .gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+  @media(min-width:620px){.gallery-grid{grid-template-columns:repeat(3,1fr);}}
+  .gallery-grid .ph{
+    aspect-ratio:1/1;background:var(--greige);border-radius:12px;
+    display:grid;place-items:center;color:#B9B9B9;font-size:.78rem;overflow:hidden;
+  }
+  .gallery-grid .ph img{width:100%;height:100%;object-fit:cover;}
+
+  /* ===== コラム一覧 ===== */
+  .columns{background:#fff;}
+  .column-grid{
+    display:grid;gap:1.6rem;grid-template-columns:1fr;
+  }
+  @media(min-width:640px){.column-grid{grid-template-columns:1fr 1fr;}}
+  @media(min-width:900px){.column-grid{grid-template-columns:1fr 1fr 1fr;}}
+  .column-card{
+    display:block;text-decoration:none;color:inherit;
+    border:1px solid var(--pink-soft);border-radius:16px;overflow:hidden;
+    transition:transform .15s ease,box-shadow .15s ease;background:#fff;
+  }
+  .column-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(237,30,120,.12);}
+  .column-card .thumb{aspect-ratio:16/10;overflow:hidden;background:var(--greige);}
+  .column-card .thumb img{width:100%;height:100%;object-fit:cover;}
+  .column-card .body{padding:1.1rem 1.2rem 1.3rem;}
+  .column-card time{font-size:.75rem;color:var(--pink);font-weight:700;letter-spacing:.05em;}
+  .column-card h3{font-size:1.02rem;font-weight:800;margin:.3em 0 .5em;line-height:1.5;}
+  .column-card p{font-size:.85rem;color:var(--ink-soft);line-height:1.7;}
+
+  /* ===== Instagram誘導 ===== */
+  .insta{
+    background:linear-gradient(135deg,#F9D5E4 0%,#FDE8D6 100%);
+    text-align:center;
+  }
+  .insta .insta-icon{
+    width:60px;height:60px;margin:0 auto 1rem;
+    display:grid;place-items:center;
+    background:#fff;border-radius:18px;
+    box-shadow:0 6px 18px rgba(237,30,120,.15);
+  }
+  .insta .insta-icon svg{width:34px;height:34px;}
+  .insta h2{font-size:clamp(1.4rem,5vw,2rem);font-weight:800;color:var(--ink);margin-bottom:.4em;line-height:1.5;}
+  .insta p{font-size:1rem;color:var(--ink-soft);margin-bottom:1.6em;}
+  .insta .handle{color:var(--pink);font-weight:800;}
+  .btn-insta{
+    display:inline-flex;align-items:center;gap:.6em;
+    background:linear-gradient(135deg,#F58529,#DD2A7B 50%,#8134AF);
+    color:#fff;text-decoration:none;font-weight:800;font-size:1.05rem;
+    padding:.9rem 2rem;border-radius:999px;
+    box-shadow:0 8px 22px rgba(221,42,123,.3);
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .btn-insta:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(221,42,123,.4);}
+  .btn-insta svg{width:22px;height:22px;}
+  .access dl{display:grid;grid-template-columns:auto 1fr;gap:.7em 1.2em;font-size:.95rem;max-width:520px;}
+  .access dt{color:var(--pink);font-weight:700;white-space:nowrap;}
+
+  /* ===== FAQ ===== */
+  .faq details{
+    background:#fff;border:1px solid var(--pink-soft);border-radius:14px;
+    padding:0 1.3rem;margin-bottom:.8rem;overflow:hidden;
+  }
+  .faq summary{
+    font-weight:700;font-size:1rem;cursor:pointer;
+    padding:1.1rem 0;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1em;
+  }
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"＋";color:var(--pink);font-weight:800;flex-shrink:0;}
+  .faq details[open] summary::after{content:"−";}
+  .faq details p{padding:0 0 1.2rem;font-size:.92rem;color:var(--ink-soft);}
+
+  /* ===== 最終CTA / 問い合わせ ===== */
+  .contact{background:var(--pink-pale);}
+  .contact .lead-copy{
+    text-align:center;font-size:clamp(1.3rem,4.5vw,1.8rem);
+    font-weight:800;color:var(--pink);line-height:1.5;margin-bottom:.4em;
+  }
+  .contact .lead-sub{text-align:center;color:var(--ink-soft);font-size:.95rem;margin-bottom:2.4em;}
+  .form-embed{
+    background:#fff;border-radius:18px;padding:.5rem;
+    box-shadow:0 6px 24px rgba(237,30,120,.1);overflow:hidden;
+    margin-bottom:2rem;
+  }
+  .form-embed iframe{width:100%;border:0;display:block;border-radius:14px;min-height:1500px;}
+  .form-placeholder{
+    padding:3rem 1.5rem;text-align:center;color:var(--ink-soft);
+    border:2px dashed var(--pink-soft);border-radius:14px;font-size:.9rem;line-height:1.8;
+  }
+  .line-sub{
+    text-align:center;padding:1.6rem;background:#fff;border-radius:16px;
+    border:1px solid var(--pink-soft);
+  }
+  .line-sub p{font-size:.92rem;color:var(--ink-soft);margin-bottom:1em;}
+  .btn-line-outline{
+    display:inline-flex;align-items:center;gap:.5em;
+    background:#06C755;color:#fff;text-decoration:none;
+    font-weight:800;font-size:1rem;padding:.85rem 1.8rem;border-radius:999px;
+    transition:transform .15s ease;
+  }
+  .btn-line-outline:hover{transform:translateY(-2px);}
+
+  /* ===== フッター ===== */
+  footer{background:#2B2B2B;color:#fff;text-align:center;padding:2.5rem 1.4rem;}
+  footer .flogo{font-weight:800;color:#fff;font-size:1.1rem;margin-bottom:.6em;display:flex;justify-content:center;}
+  footer .flinks{display:flex;gap:1.2rem;justify-content:center;margin:1em 0;flex-wrap:wrap;}
+  footer .flinks a{color:#F9AECB;text-decoration:none;font-size:.9rem;}
+  footer small{color:#999;font-size:.78rem;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{scroll-behavior:auto;transition:none!important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header class="site-header">
+  <div class="logo"><img src="images/7notes_logo-pink.png" alt="7notes Kids' English" class="logo-img"><span>英語リトミック｜羽曳野市羽曳が丘</span></div>
+  <nav class="site-nav" id="siteNav">
+    <a href="#about">教室について</a>
+    <a href="#class">クラス案内</a>
+    <a href="#gallery">レッスンの様子</a>
+    <a href="#columns">コラム</a>
+    <a href="#voices">保護者の声</a>
+    <a href="#instructors">講師紹介</a>
+    <a href="#access">アクセス</a>
+    <a href="#faq">よくある質問</a>
+    <a href="#contact" class="nav-cta">体験レッスン</a>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <h1><span class="l">音楽と英語で、</span><span class="l"><em>「できた！」</em>を積み重ねる。</span></h1>
+      <p class="lead">大阪府羽曳野市羽曳が丘の英語リトミック教室<br>0〜6歳／少人数制／親子で楽しめるレッスン</p>
+      <div class="tags">
+        <span># 0〜6歳</span>
+        <span># オールEnglish</span>
+        <span># 少人数制</span>
+        <span># フォニックス</span>
+      </div>
+      <a href="#contact" class="btn-line">
+        体験レッスンを申し込む
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- お知らせ -->
+<section class="news">
+  <div class="wrap">
+    <h2 class="section-title">お知らせ</h2>
+    <div class="section-title-en">Information</div>
+
+    {oshirase.length === 0 && (
+      <p style="color:var(--ink-soft);font-size:.95rem;">現在、お知らせはありません。</p>
+    )}
+
+    {oshirase.slice(0, 5).map((item) => (
+      <div class="news-item">
+        <time>{formatDate(item.date)}</time>
+        <div class="news-body">
+          <span class="tag">お知らせ</span>
+          <h3>{item.title}</h3>
+          <p>{item.excerpt}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- 特徴 -->
+<section class="features" id="about">
+  <div class="wrap">
+    <h2 class="section-title">7notes Kids' English について</h2>
+    <div class="section-title-en">about us</div>
+
+    <div class="feature">
+      <div class="icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><text x="24" y="31" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="17" fill="#ED1E78" letter-spacing="-0.5">ABC</text></svg></div>
+      <div>
+        <h3>オールEnglishレッスン</h3>
+        <p>先生たちもレッスン中は英語しか使わない、オールEnglishのレッスンです。繰り返しの中で、英語の指示を自然に聞き分けられるようになります。</p>
+        <span class="example">Let's walk! で歩く／Jump 3 times. で3回跳ぶ／slowly・faster も英語で</span>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#ED1E78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17 21a7 7 0 0 1 14 0c0 4-3 5.5-4.5 7.5S25 33 25 35a3.5 3.5 0 0 1-7 0c0-1.5.5-2.5 0-4"/><path d="M21.5 21a2.5 2.5 0 0 1 5 0"/></svg></div>
+      <div>
+        <h3>黄金期の学習</h3>
+        <p>産まれてから6歳頃までが、聴覚が育つ黄金期と言われています。耳の良い赤ちゃんの頃からたっぷりと英語と音楽を聴かせ、音楽に合わせて体を動かしながら、自然とリズム感や表現力、英語を聴ける耳を育てます。</p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20 14l12-3v18" stroke="#ED1E78" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="31" r="4" fill="#ED1E78"/><circle cx="29" cy="28" r="4" fill="#ED1E78"/></svg></div>
+      <div>
+        <h3>身体を動かす学習</h3>
+        <p>目・耳からの情報に「身体を動かす」をプラスすることで、子どもたちはより効果的に英語を学習していきます。音楽に合わせて身体を動かしながら、自然とリズム感や表現力も育てます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- クラス情報 -->
+<section class="classes" id="class">
+  <div class="wrap">
+    <h2 class="section-title">開講クラスのご案内</h2>
+    <div class="section-title-en">Class Information</div>
+    <p style="margin-bottom:1.8rem;color:var(--ink-soft);font-size:.95rem;">年齢はあくまで基準です。お子さんの“今”に合わせて選んでいただけます。</p>
+
+    <div class="class-list">
+      <div class="class-row baby">
+        <div class="label">
+          <span class="en">Baby</span>
+          <span class="who">親子で参加／少人数で、ひとりひとりのペースを大切に</span>
+        </div>
+        <dl class="detail">
+          <dt>対象</dt><dd>0歳〜2歳</dd>
+          <dt>日時</dt><dd>木曜 17:30〜18:00（年間36回）</dd>
+          <dt>場所</dt><dd>羽曳野市羽曳が丘 第1集会所2階</dd>
+          <dt>料金</dt><dd class="fee-num">月額 5,500円<small>入会金 2,000円</small></dd>
+        </dl>
+      </div>
+
+      <div class="class-row kids">
+        <div class="label">
+          <span class="en">Kids</span>
+          <span class="who">子どものみで参加／みんなでワイワイ、学びも濃く</span>
+        </div>
+        <dl class="detail">
+          <dt>対象</dt><dd>3歳〜6歳 ※未就学児</dd>
+          <dt>日時</dt><dd>木曜 18:20〜19:00（年間36回）</dd>
+          <dt>場所</dt><dd>羽曳野市羽曳が丘 第1集会所2階</dd>
+          <dt>料金</dt><dd class="fee-num">月額 5,500円<small>入会金 2,000円</small></dd>
+        </dl>
+      </div>
+    </div>
+    <p class="class-note">どちらのクラスが合うか迷ったら、体験レッスンでご相談ください。</p>
+  </div>
+</section>
+
+<!-- ギャラリー（レッスンの様子） -->
+<section class="gallery" id="gallery">
+  <div class="wrap">
+    <h2 class="section-title">レッスンの様子</h2>
+    <div class="section-title-en">Our Lessons</div>
+    <div class="gallery-grid">
+      <div class="ph"><img src="images/lesson-01.jpg" alt="雪だるまのカードを使って英語で単語を学ぶレッスンの様子" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-02.jpg" alt="子どもが自分からカードを指さして答える様子" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-05.jpg" alt="床に並べたアルファベットのカードで遊ぶ子どもたち" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-07.jpg" alt="音楽に合わせて友だちと手をつないで踊る様子" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-03.jpg" alt="ピアノの生演奏に合わせて進む英語リトミックのレッスン" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-06.jpg" alt="ボールを使って体を動かしながら英語に親しむ様子" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-08.jpg" alt="先生と1対1で英語のやり取りをする子ども" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-09.jpg" alt="メニューカードを使った英語の遊びの様子" loading="lazy"></div>
+      <div class="ph"><img src="images/lesson-04.jpg" alt="みんなで元気に手を挙げてレッスンを楽しむ子どもたち" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Instagram誘導 -->
+<section class="insta">
+  <div class="wrap">
+    <div class="insta-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="#DD2A7B" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4.5" stroke="#DD2A7B" stroke-width="2"/>
+        <circle cx="17.5" cy="6.5" r="1.4" fill="#DD2A7B"/>
+      </svg>
+    </div>
+    <h2>レッスンの様子を<br>Instagramで毎週更新中！</h2>
+    <p>子どもたちの生き生きとした表情や、実際のレッスンの雰囲気を<br>写真や動画でお届けしています。ぜひのぞいてみてください。<br><span class="handle">@7notes_english_rhythmic</span></p>
+    <a href="https://www.instagram.com/7notes_english_rhythmic?igsh=MW4zaHIzbnNyMWUw&amp;utm_source=qr" class="btn-insta" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="#fff" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4.5" stroke="#fff" stroke-width="2"/>
+        <circle cx="17.5" cy="6.5" r="1.4" fill="#fff"/>
+      </svg>
+      Instagramを見る
+    </a>
+  </div>
+</section>
+
+<!-- コラム一覧 -->
+<section class="columns" id="columns">
+  <div class="wrap">
+    <h2 class="section-title">コラム</h2>
+    <div class="section-title-en">Column</div>
+    <p style="margin-bottom:2rem;color:var(--ink-soft);font-size:.95rem;">英語リトミックや子育てについて、日々感じていることを綴っています。</p>
+
+    {columns.length === 0 && (
+      <p style="color:var(--ink-soft);font-size:.95rem;">現在、記事はありません。</p>
+    )}
+
+    <div class="column-grid">
+      {columns.map((post) => (
+        <a class="column-card" href={`/columns/${post.id}`}>
+          <div class="thumb">
+            <img src={post.thumbnail || defaultThumb} alt={post.title} loading="lazy" />
+          </div>
+          <div class="body">
+            <time>{formatDate(post.date)}</time>
+            <h3>{post.title}</h3>
+            <p>{post.excerpt}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- 保護者の声 -->
+<section class="voices" id="voices">
+  <div class="wrap">
+    <h2 class="section-title">保護者様の声</h2>
+    <div class="section-title-en">Parents' Voices</div>
+
+    <div class="voice-card">
+      <p>不安そうに母から離れなかった子が、すっかりレッスン大好きになって「今日は英語いく？」と頻繁に聞いてくる程になっています！先生方の優しく楽しい雰囲気がそうさせてくれたのかなと感謝でいっぱいです。自宅でもレッスン中の歌を口ずさんでいたり、アルファベットを見つけて「これA！」と指差したりする時もあります。成長が楽しみです＾＾</p>
+    </div>
+
+    <div class="voice-card">
+      <p>1週間の楽しみは木曜日のレッスンになっています＾＾ 初めはなにもわからない状態だったけど通ううちに先生が何を言っているかわかるようになっていて。その成長を後ろから見ると、我が子もお友達の成長もほんとに素晴らしく感動しました。車で通えるし、楽しく遊び感覚で英語にチャレンジできて良いです！</p>
+    </div>
+
+    <div class="voice-card">
+      <p>とても意欲的に通えていて嬉しいです。一時は英語の指示が分からなくて恥ずかしい、嫌や、となっていたと思うのですが、先生方がいつも良く見てくださって、声を掛けてくださっているおかげで、今はわからないなりにも、頑張ってみる、ということが出来るようになってきたのかなと思います。家でも「今何月やったっけ？December？」と聞いてきたり、教わった歌を一緒に歌ったりと楽しんでいます！</p>
+    </div>
+  </div>
+</section>
+
+<!-- 講師紹介 -->
+<section class="instructors" id="instructors">
+  <div class="wrap">
+    <h2 class="section-title">講師紹介</h2>
+    <div class="section-title-en">Meet the Instructor</div>
+
+    <div class="inst-grid">
+      <div class="inst-card">
+        <div class="photo"><img src="images/kotomi.jpg" alt="講師 Kotomi 先生" loading="lazy"></div>
+        <div class="body">
+          <h3>Kotomi</h3>
+          <p>海外（カナダ他）での仕事・子育て経験を活かし、帰国後は有名幼児教室や保育園にて英語専任講師を勤める。「英語教育をもっと身近に」の想いを胸に、幼児から大人まで幅広い層へのティーチングを行う。</p>
+        </div>
+      </div>
+
+      <div class="inst-card">
+        <div class="photo"><img src="images/lisa.jpg" alt="講師 Lisa 先生" loading="lazy"></div>
+        <div class="body">
+          <h3>Lisa</h3>
+          <p>幼少期より、作曲や即興演奏を学ぶ。英語リトミック講師養成講座を修了。DTP/WEBデザイナーとしても活躍中。デザインスキルと自身の子育て経験を活かし、子どもたちが楽しんで学べるオリジナル教材とレッスンメニューを作る。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- アクセス -->
+<section class="access" id="access">
+  <div class="wrap">
+    <h2 class="section-title">アクセス</h2>
+    <div class="section-title-en">Access</div>
+    <dl>
+      <dt>場所</dt><dd>羽曳野市羽曳が丘 第1集会所 2階</dd>
+      <dt>エリア</dt><dd>大阪府羽曳野市（藤井寺市・松原市・富田林市などからも通えます）</dd>
+      <dt>駐車場</dt><dd>充分な駐車スペースがあります</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <h2 class="section-title">よくあるご質問</h2>
+    <div class="section-title-en">FAQ</div>
+
+    <details><summary>何歳から通えますか？</summary><p>0歳から通えます。0〜2歳は親子で参加するベビークラス、3〜6歳の未就学児は子どものみで参加するキッズクラスがあります。</p></details>
+    <details><summary>英語がまったく初めてでも大丈夫ですか？</summary><p>はい、初めてのお子さんがほとんどです。歌やリズム、体を動かす遊びの中で自然に英語に親しんでいくので、英語が初めてでも問題ありません。</p></details>
+    <details><summary>保護者が英語を話せなくても大丈夫ですか？</summary><p>大丈夫です。保護者の方に英語力は必要ありません。お子さんと一緒に楽しんでいただくことが一番のサポートになります。</p></details>
+    <details><summary>レッスンは何語で行われますか？</summary><p>レッスンは先生も英語のみを使うオールEnglishで行います。Let's walk! やJump 3 times! などの指示を、繰り返しの中で自然に英語で聞き分けられるようになります。</p></details>
+    <details><summary>料金はいくらですか？</summary><p>ベビークラス・キッズクラスともに月額5,500円です。入会金は2,000円です。どちらも年間36回（月3回）のレッスンです。</p></details>
+    <details><summary>イヤイヤ期で落ち着いて座れなくても参加できますか？</summary><p>大丈夫です。特にベビークラスは少人数で一人ひとりのペースを大切にしています。座っていなくても、子どもの耳はしっかり聴いているので、その場にいるだけで十分です。</p></details>
+    <details><summary>体験レッスンはできますか？</summary><p>はい、体験レッスンを受け付けています。サイトの申し込みフォーム、または公式LINEからお気軽にお申し込みください。</p></details>
+  </div>
+</section>
+
+<!-- 問い合わせ -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <p class="lead-copy">体験レッスン申し込み<br>／お問い合わせ</p>
+    <p class="lead-sub">「うちの子に合うかな？」を、実際に感じてみてください。<br>下記フォームよりお気軽にお申し込みいただけます。</p>
+
+    <!-- Googleフォーム埋め込み -->
+    <div class="form-embed">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdWF2bAaGHHDmmYdlivCnwkIyPZuO9FyEWAryDzmMVxAT5nLQ/viewform?embedded=true" height="1500" title="体験レッスン申し込み・お問い合わせフォーム" loading="lazy">読み込んでいます…</iframe>
+    </div>
+
+    <!-- LINEサブ導線 -->
+    <div class="line-sub">
+      <p>公式LINEでもお問い合わせいただけます。<br>LINEをお使いの方は、こちらからもどうぞ。</p>
+      <a href="https://lin.ee/u0CDNNn" class="btn-line-outline" target="_blank" rel="noopener">
+        公式LINEで問い合わせる
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer>
+  <div class="flogo"><img src="images/7notes_logo_white-01.png" alt="7notes Kids' English" style="height:72px;width:auto;"></div>
+  <p style="font-size:.85rem;opacity:.8;">英語リトミック教室｜大阪府羽曳野市羽曳が丘</p>
+  <div class="flinks">
+    <a href="https://www.instagram.com/7notes_english_rhythmic?igsh=MW4zaHIzbnNyMWUw&amp;utm_source=qr" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://note.com/7notes_" target="_blank" rel="noopener">note</a>
+    <a href="#contact">体験レッスン</a>
+  </div>
+  <small>&copy; 2026 7notes Kids' English</small>
+</footer>
+
+<script>
+  (function(){
+    var toggle = document.getElementById('navToggle');
+    var nav = document.getElementById('siteNav');
+    // オーバーレイを生成
+    var overlay = document.createElement('div');
+    overlay.className = 'nav-overlay';
+    document.body.appendChild(overlay);
+
+    function openMenu(){
+      nav.classList.add('open');
+      overlay.classList.add('open');
+      toggle.setAttribute('aria-expanded','true');
+      toggle.setAttribute('aria-label','メニューを閉じる');
+    }
+    function closeMenu(){
+      nav.classList.remove('open');
+      overlay.classList.remove('open');
+      toggle.setAttribute('aria-expanded','false');
+      toggle.setAttribute('aria-label','メニューを開く');
+    }
+    toggle.addEventListener('click', function(){
+      if(nav.classList.contains('open')){ closeMenu(); } else { openMenu(); }
+    });
+    overlay.addEventListener('click', closeMenu);
+    // メニュー内のリンクをタップしたら閉じる
+    nav.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', closeMenu);
+    });
+    // Escキーでも閉じる
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ closeMenu(); }
+    });
+  })();
+</script>
+</body>
+</html>

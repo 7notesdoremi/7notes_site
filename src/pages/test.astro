@@ -1,0 +1,38 @@
+---
+import { getArticles } from "../lib/notion.js";
+
+// お知らせとコラムを取得
+const oshirase = await getArticles("お知らせ");
+const columns = await getArticles("コラム");
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Notion連携テスト</title>
+  </head>
+  <body style="font-family: sans-serif; padding: 2rem;">
+    <h1>Notion連携テスト</h1>
+
+    <h2>お知らせ（{oshirase.length}件）</h2>
+    <ul>
+      {oshirase.map((a) => (
+        <li>
+          <strong>{a.title}</strong>（{a.date}）<br />
+          {a.excerpt}
+        </li>
+      ))}
+    </ul>
+
+    <h2>コラム（{columns.length}件）</h2>
+    <ul>
+      {columns.map((a) => (
+        <li>
+          <strong>{a.title}</strong>（{a.date}）<br />
+          {a.excerpt}
+          {a.thumbnail && <div><img src={a.thumbnail} width="200" /></div>}
+        </li>
+      ))}
+    </ul>
+  </body>
+</html>

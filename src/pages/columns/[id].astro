@@ -1,0 +1,91 @@
+---
+import { getArticle, getAllArticleIds } from "../../lib/notion.js";
+
+// 全記事分のページを生成する
+export async function getStaticPaths() {
+  const ids = await getAllArticleIds();
+  return ids.map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+const article = await getArticle(id);
+
+// 日付整形
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+}
+
+// Notionのブロックを簡易的にHTML化するヘルパー
+function richText(arr) {
+  if (!arr) return "";
+  return arr.map((t) => t.plain_text).join("");
+}
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{article.title}｜7notes Kids' English</title>
+  <style>
+    :root{ --pink:#ED1E78; --ink:#2B2B2B; --ink-soft:#5A5A5A; --pink-pale:#FDF0F5; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",system-ui,sans-serif;color:var(--ink);line-height:1.9;background:#fff;}
+    .article-header{background:var(--pink-pale);padding:1.2rem;}
+    .article-header a{color:var(--pink);text-decoration:none;font-weight:700;font-size:.9rem;}
+    .article-hero img{width:100%;max-height:420px;object-fit:cover;display:block;}
+    main{max-width:720px;margin:0 auto;padding:2.5rem 1.4rem 4rem;}
+    main time{color:var(--pink);font-weight:700;font-size:.85rem;letter-spacing:.05em;}
+    main h1{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:800;line-height:1.5;margin:.4em 0 1.2em;}
+    main h2{font-size:1.3rem;font-weight:800;color:var(--pink);margin:1.6em 0 .5em;}
+    main h3{font-size:1.1rem;font-weight:800;margin:1.4em 0 .4em;}
+    main p{margin:0 0 1.2em;}
+    main img{width:100%;border-radius:12px;margin:1.5em 0;}
+    main ul,main ol{margin:0 0 1.2em 1.4em;}
+    main li{margin-bottom:.4em;}
+    .back-btn{display:inline-block;margin-top:2.5rem;background:var(--pink);color:#fff;text-decoration:none;padding:.8rem 1.8rem;border-radius:999px;font-weight:700;}
+  </style>
+</head>
+<body>
+  <div class="article-header">
+    <a href="/#columns">← コラム一覧へ戻る</a>
+  </div>
+
+  {article.thumbnail && (
+    <div class="article-hero"><img src={article.thumbnail} alt={article.title} /></div>
+  )}
+
+  <main>
+    <time>{formatDate(article.date)}</time>
+    <h1>{article.title}</h1>
+
+    {article.blocks.map((block) => {
+      const t = block.type;
+      if (t === "paragraph")
+        return <p>{richText(block.paragraph.rich_text)}</p>;
+      if (t === "heading_1")
+        return <h2>{richText(block.heading_1.rich_text)}</h2>;
+      if (t === "heading_2")
+        return <h2>{richText(block.heading_2.rich_text)}</h2>;
+      if (t === "heading_3")
+        return <h3>{richText(block.heading_3.rich_text)}</h3>;
+      if (t === "bulleted_list_item")
+        return <ul><li>{richText(block.bulleted_list_item.rich_text)}</li></ul>;
+      if (t === "numbered_list_item")
+        return <ol><li>{richText(block.numbered_list_item.rich_text)}</li></ol>;
+      if (t === "image") {
+        const url = block.image?.file?.url || block.image?.external?.url;
+        return url ? <img src={url} alt="" /> : null;
+      }
+      if (t === "quote")
+        return <blockquote style="border-left:4px solid var(--pink);padding-left:1em;color:var(--ink-soft);">{richText(block.quote.rich_text)}</blockquote>;
+      return null;
+    })}
+
+    <a class="back-btn" href="/#columns">コラム一覧へ戻る</a>
+  </main>
+</body>
+</html>
